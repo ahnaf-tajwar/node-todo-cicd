@@ -38,7 +38,7 @@
             font-size: 1.2em;
             color: #333;
         }
-        input[type="text"] {
+        input[type="text"], input[readonly] {
             width: 100%;
             padding: 12px;
             margin-bottom: 20px;
@@ -46,6 +46,10 @@
             border-radius: 4px;
             font-size: 16px;
             box-sizing: border-box;
+        }
+        input[readonly] {
+            background-color: #f0f0f0;
+            color: #888;
         }
         .btn {
             background-color: #4a90e2;
@@ -72,9 +76,14 @@
     <div class="header">Edit Your Goal</div>
     <div class="container">
         <div class="card">
+            <h2>Current Goal:</h2>
+            <!-- Read-only field showing the current goal -->
+            <input type="text" value="<%= todoText %>" readonly>
+            
             <h2>Update your goal:</h2>
             <form action="/todo/edit/<%= todoIdx %>" method="post">
                 <input type="hidden" name="_method" value="PUT">
+                <!-- Input field for the updated goal -->
                 <input type="text" name="editTodo" id="editTodo" placeholder="Enter your updated goal" autofocus>
                 <button type="submit" class="btn">Save Changes</button>
             </form>
