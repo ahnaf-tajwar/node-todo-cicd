@@ -75,7 +75,7 @@
             <h2>Update your goal:</h2>
             <form action="/todo/edit/<%= todoIdx %>" method="post">
                 <input type="hidden" name="_method" value="PUT">
-                <input type="text" name="editTodo" id="editTodo" value="Finish Presentation before time" autofocus>
+                <input type="text" name="editTodo" id="editTodo" placeholder="Enter your updated goal" autofocus>
                 <button type="submit" class="btn">Save Changes</button>
             </form>
         </div>
