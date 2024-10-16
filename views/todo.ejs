@@ -141,7 +141,7 @@
             <% todolist.forEach(function(todo, index) { %>
             <li>
                 <%- todo %>
-                <button class="edit-btn" onclick="window.location.href='/todo/<%= index %>'">✎</button>
+                <button class="edit-btn" onclick="window.location.href='/todo/edit/<%= index %>?task=<%- todo %>'">✎</button>
                 <button class="delete-btn" onclick="window.location.href='/todo/delete/<%= index %>'">✖</button>
             </li>
             <% }); %>
