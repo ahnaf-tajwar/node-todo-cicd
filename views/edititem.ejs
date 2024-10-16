@@ -1,94 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Goal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 0;
-        }
-        .header {
-            background-color: #4a90e2;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            font-size: 2em;
-            font-weight: 300;
-        }
-        .container {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-        .card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 30px;
-        }
-        h2 {
-            margin-top: 0;
-            margin-bottom: 20px;
-            font-weight: 500;
-            font-size: 1.2em;
-            color: #333;
-        }
-        input[type="text"], input[readonly] {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-        input[readonly] {
-            background-color: #f0f0f0;
-            color: #888;
-        }
-        .btn {
-            background-color: #4a90e2;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        .btn:hover {
-            background-color: #3a7bc8;
-        }
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            color: #4a90e2;
-            text-decoration: none;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">Edit Your Goal</div>
-    <div class="container">
-        <div class="card">
-            <h2>Current Goal:</h2>
-            <!-- Read-only field showing the current goal -->
-            <input type="text" value="<%= todoText %>" readonly>
-            
-            <h2>Update your goal:</h2>
-            <form action="/todo/edit/<%= todoIdx %>" method="post">
+
+<html>
+
+    <head>
+        <title>Edit <%- todo %></title>
+        <style>
+            a {
+                text-decoration: none;
+                color: black;
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <h1>Edit <%- todo %>:</h1>
+        <form action="/todo/edit/<%= todoIdx %>" method="post">
+            <p>
+                <label for="editTodo">Change to:</label>
                 <input type="hidden" name="_method" value="PUT">
-                <!-- Input field for the updated goal -->
-                <input type="text" name="editTodo" id="editTodo" placeholder="Enter your updated goal" autofocus>
-                <button type="submit" class="btn">Save Changes</button>
-            </form>
-        </div>
-        <a href="/" class="back-link">← Back to Goals List</a>
-    </div>
-</body>
+                <input type="text" name="editTodo" id="editTodo" autofocus placeholder="<%- todo %>" />
+                <input type="submit" value="Save" />
+            </p>
+        </form>
+    </body>
+
 </html>
