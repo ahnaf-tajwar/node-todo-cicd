@@ -1,156 +1,104 @@
+<!-- Edit page (modification for showing the current task) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Todo List App</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>Edit Goal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #4a90e2;
-            --secondary-color: #f5a623;
-            --background-color: #f7f9fc;
-            --text-color: #333;
-            --delete-color: #e74c3c;
-            --edit-color: #3498db;
-        }
-
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
+            background-color: #f5f5f5;
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
         }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 30px 20px;
-            flex-grow: 1;
-        }
-
-        h1 {
-            background-color: var(--primary-color);
+        .header {
+            background-color: #4a90e2;
             color: white;
-            margin: 0;
             padding: 20px;
             text-align: center;
+            font-size: 2em;
             font-weight: 300;
-            font-size: 2.5em;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-
-        ul {
-            list-style: none;
-            padding: 0;
-            margin-top: 30px;
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0 20px;
         }
-
-        ul li {
+        .card {
             background: white;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            padding: 15px 20px;
-            position: relative;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-        }
-
-        ul li:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        ul li a {
-            color: var(--text-color);
-            text-decoration: none;
-            font-weight: 400;
-        }
-
-        .delete-btn, .edit-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.2em;
-            transition: all 0.3s ease;
-        }
-
-        .delete-btn {
-            right: 15px;
-            color: var(--delete-color);
-        }
-
-        .edit-btn {
-            right: 45px;
-            color: var(--edit-color);
-        }
-
-        .delete-btn:hover, .edit-btn:hover {
-            transform: translateY(-50%) scale(1.2);
-        }
-
-        form {
-            background: white;
-            padding: 25px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-top: 30px;
+            padding: 30px;
         }
-
-        label {
-            display: block;
-            margin-bottom: 15px;
-            color: var(--text-color);
+        h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
             font-weight: 500;
+            font-size: 1.2em;
+            color: #333;
         }
-
-        input[type="text"] {
+        input[type="text"], input[readonly] {
             width: 100%;
-            padding: 12px 15px;
+            padding: 12px;
             margin-bottom: 20px;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 16px;
             box-sizing: border-box;
         }
-
-        input[type="submit"] {
-            background-color: var(--primary-color);
+        input[readonly] {
+            background-color: #f0f0f0;
+            color: #888;
+        }
+        .btn {
+            background-color: #4a90e2;
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 12px 20px;
+            border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s;
         }
-
-        input[type="submit"]:hover {
+        .btn:hover {
             background-color: #3a7bc8;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #4a90e2;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
-    <h1>Your Daily Goals</h1>
+    <div class="header">Edit Your Goal</div>
     <div class="container">
-        <ul>
-            <% todolist.forEach(function(todo, index) { %>
-            <li>
-                <%- todo %>
-                <button class="edit-btn" onclick="window.location.href='/todo/edit/<%= index %>?task=<%- todo %>'">✎</button>
-                <button class="delete-btn" onclick="window.location.href='/todo/delete/<%= index %>'">✖</button>
-            </li>
-            <% }); %>
-        </ul>
-        <form action="/todo/add/" method="post">
-            <label for="newtodo">What's your next goal?</label>
-            <input type="text" name="newtodo" id="newtodo" placeholder="Enter your goal here" autofocus />
-            <input type="submit" value="Add Goal" />
-        </form>
+        <div class="card">
+            <h2>Current Goal:</h2>
+            <!-- Read-only field showing the current goal -->
+            <input type="text" value="<%= task %>" readonly>
+
+            <h2>Update your goal:</h2>
+            <form action="/todo/edit/<%= todoIdx %>" method="post">
+                <input type="hidden" name="_method" value="PUT">
+                <!-- Input field for the updated goal -->
+                <input type="text" name="editTodo" id="editTodo" placeholder="Enter your updated goal" autofocus>
+                <button type="submit" class="btn">Save Changes</button>
+            </form>
+        </div>
+        <a href="/" class="back-link">← Back to Goals List</a>
     </div>
+
+    <script>
+        // Extract the 'task' from URL parameters to display in the input field
+        const urlParams = new URLSearchParams(window.location.search);
+        const task = urlParams.get('task');
+        if (task) {
+            document.querySelector('input[readonly]').value = task;
+        }
+    </script>
 </body>
 </html>
