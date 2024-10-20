@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  app:
+    image: node:12.2.0-alpine
+    container_name: todo-app
+    working_dir: /node
+    volumes:
+      - .:/node
+    ports:
+      - "8000:8000"
+    command: npm start
+    networks:
+      - todo-network
+
+networks:
+  todo-network:
+    driver: bridge
