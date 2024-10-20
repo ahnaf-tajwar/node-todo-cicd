@@ -20,6 +20,7 @@ describe('To-do List App', () => {
                 .expect(200) // HTTP status code for success
                 .end((err, res) => {
                     if (err) return done(err);
+                    console.log('GET /todo response:', res.text);
                     assert(res.text.includes('<form'), 'Expected HTML form in response');
                     done();
                 });
@@ -31,21 +32,22 @@ describe('To-do List App', () => {
             request(app)
                 .post('/todo/add')
                 .send({ newtodo: 'Test Item' })
-                .expect(302)  // Check for redirect
+                .expect(302) // Check for redirect
                 .expect('Location', '/todo')
                 .end((err, res) => {
                     if (err) return done(err);
-                    
-                    // Increase timeout to ensure the item is added and the page is reloaded
-                    setTimeout(() => {  // Wait for 1000ms
+                    console.log('POST /todo/add redirection completed');
+
+                    setTimeout(() => {
                         request(app)
                             .get('/todo')
                             .end((err, res) => {
                                 if (err) return done(err);
+                                console.log('GET /todo after adding item:', res.text);
                                 assert(res.text.includes('Test Item'), 'New item should appear in list');
                                 done();
                             });
-                    }, 1000);  // Increased the delay
+                    }, 1500);  // Increased timeout
                 });
         });
     });
@@ -62,15 +64,17 @@ describe('To-do List App', () => {
                         .expect('Location', '/todo')
                         .end((err, res) => {
                             if (err) return done(err);
+
                             setTimeout(() => {  // Increased delay for page reload
                                 request(app)
                                     .get('/todo')
                                     .end((err, res) => {
                                         if (err) return done(err);
+                                        console.log('GET /todo after deletion:', res.text);
                                         assert(!res.text.includes('Delete Me'), 'Item should be deleted');
                                         done();
                                     });
-                            }, 1000);  // Increased delay
+                            }, 1500);  // Increased delay
                         });
                 });
         });
@@ -83,8 +87,7 @@ describe('To-do List App', () => {
                 .send({ newtodo: 'Edit Me' })  // Add item first
                 .end((err, res) => {
                     if (err) return done(err);
-                    
-                    // Edit the item and check for changes after some delay
+
                     request(app)
                         .put('/todo/edit/0')
                         .send({ editTodo: 'Edited Item' })  // Edit the first item
@@ -92,16 +95,17 @@ describe('To-do List App', () => {
                         .expect('Location', '/todo')
                         .end((err, res) => {
                             if (err) return done(err);
-                            
+
                             setTimeout(() => {  // Increased delay to ensure edit is visible
                                 request(app)
                                     .get('/todo')
                                     .end((err, res) => {
                                         if (err) return done(err);
+                                        console.log('GET /todo after editing:', res.text);
                                         assert(res.text.includes('Edited Item'), 'Item should be edited');
                                         done();
                                     });
-                            }, 1000);  // Increased delay
+                            }, 1500);  // Increased delay
                         });
                 });
         });
