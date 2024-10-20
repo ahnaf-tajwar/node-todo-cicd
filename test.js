@@ -1,42 +1,94 @@
-// Requiring module
+const request = require('supertest');
+const app = require('./app');
 const assert = require('assert');
 
-// We can group similar tests inside a describe block
-describe("Simple Calculations", () => {
-before(() => {
-	console.log( "This part executes once before all tests" );
-});
+describe('To-do List App', () => {
+    let server;
 
-after(() => {
-	console.log( "This part executes once after all tests" );
-});
-	
-// We can add nested blocks for different tests
-describe( "Test1", () => {
-	beforeEach(() => {
-	console.log( "executes before every test" );
-	});
-	
-	it("Is returning 5 when adding 2 + 3", () => {
-	assert.equal(2 + 3, 5);
-	});
+    before(() => {
+        server = app.listen(8001); // Starting the app on a different port for testing
+    });
 
-	it("Is returning 6 when multiplying 2 * 3", () => {
-	assert.equal(2*3, 6);
-	});
-});
+    after(() => {
+        server.close(); // Close the server after tests
+    });
 
-describe("Test2", () => {
-	beforeEach(() => {
-	console.log( "executes before every test" );
-	});
-	
-	it("Is returning 4 when adding 2 + 3", () => {
-	assert.equal(2 + 3, 5);
-	});
+    describe('GET /todo', () => {
+        it('should return the todo list', (done) => {
+            request(app)
+                .get('/todo')
+                .expect(200) // HTTP status code for success
+                .end((err, res) => {
+                    if (err) return done(err);
+                    assert(res.text.includes('<form'), 'Expected HTML form in response');
+                    done();
+                });
+        });
+    });
 
-	it("Is returning 8 when multiplying 2 * 4", () => {
-	assert.equal(2*4, 8);
-	});
-});
+    describe('POST /todo/add', () => {
+        it('should add a new todo item', (done) => {
+            request(app)
+                .post('/todo/add')
+                .send({ newtodo: 'Test Item' })
+                .expect(302) // Redirect status
+                .expect('Location', '/todo') // Check redirect
+                .end((err, res) => {
+                    if (err) return done(err);
+                    request(app)
+                        .get('/todo')
+                        .end((err, res) => {
+                            assert(res.text.includes('Test Item'), 'New item should appear in list');
+                            done();
+                        });
+                });
+        });
+    });
+
+    describe('GET /todo/delete/:id', () => {
+        it('should delete a todo item', (done) => {
+            request(app)
+                .post('/todo/add')
+                .send({ newtodo: 'Delete Me' }) // Add item first
+                .end((err, res) => {
+                    request(app)
+                        .get('/todo/delete/0') // Delete the first item (assuming it's ID 0)
+                        .expect(302)
+                        .expect('Location', '/todo')
+                        .end((err, res) => {
+                            if (err) return done(err);
+                            request(app)
+                                .get('/todo')
+                                .end((err, res) => {
+                                    assert(!res.text.includes('Delete Me'), 'Item should be deleted');
+                                    done();
+                                });
+                        });
+                });
+        });
+    });
+
+    describe('PUT /todo/edit/:id', () => {
+        it('should edit an existing todo item', (done) => {
+            request(app)
+                .post('/todo/add')
+                .send({ newtodo: 'Edit Me' }) // Add item first
+                .end((err, res) => {
+                    request(app)
+                        .put('/todo/edit/0')
+                        .send({ editTodo: 'Edited Item' }) // Edit the first item
+                        .expect(302)
+                        .expect('Location', '/todo')
+                        .end((err, res) => {
+                            if (err) return done(err);
+                            request(app)
+                                .get('/todo')
+                                .end((err, res) => {
+                                    assert(res.text.includes('Edited Item'), 'Item should be edited');
+                                    done();
+                                });
+                        });
+                });
+        });
+    });
 });
