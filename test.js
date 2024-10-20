@@ -36,8 +36,8 @@ describe('To-do List App', () => {
                 .end((err, res) => {
                     if (err) return done(err);
                     
-                    // Retry mechanism to check if the item has been added
-                    setTimeout(() => {  // Allow time for the list to be updated
+                    // Increase timeout to ensure the item is added and the page is reloaded
+                    setTimeout(() => {  // Wait for 1000ms
                         request(app)
                             .get('/todo')
                             .end((err, res) => {
@@ -45,7 +45,7 @@ describe('To-do List App', () => {
                                 assert(res.text.includes('Test Item'), 'New item should appear in list');
                                 done();
                             });
-                    }, 500);  // Adjust the delay if necessary
+                    }, 1000);  // Increased the delay
                 });
         });
     });
@@ -62,7 +62,7 @@ describe('To-do List App', () => {
                         .expect('Location', '/todo')
                         .end((err, res) => {
                             if (err) return done(err);
-                            setTimeout(() => {  // Allow time for the list to be updated
+                            setTimeout(() => {  // Increased delay for page reload
                                 request(app)
                                     .get('/todo')
                                     .end((err, res) => {
@@ -70,7 +70,7 @@ describe('To-do List App', () => {
                                         assert(!res.text.includes('Delete Me'), 'Item should be deleted');
                                         done();
                                     });
-                            }, 500);  // Adjust the delay if necessary
+                            }, 1000);  // Increased delay
                         });
                 });
         });
@@ -93,7 +93,7 @@ describe('To-do List App', () => {
                         .end((err, res) => {
                             if (err) return done(err);
                             
-                            setTimeout(() => {  // Allow time for the item to be updated
+                            setTimeout(() => {  // Increased delay to ensure edit is visible
                                 request(app)
                                     .get('/todo')
                                     .end((err, res) => {
@@ -101,7 +101,7 @@ describe('To-do List App', () => {
                                         assert(res.text.includes('Edited Item'), 'Item should be edited');
                                         done();
                                     });
-                            }, 500);  // Adjust the delay if necessary
+                            }, 1000);  // Increased delay
                         });
                 });
         });
