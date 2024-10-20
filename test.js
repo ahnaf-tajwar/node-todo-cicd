@@ -6,7 +6,7 @@ describe('To-do List App', () => {
     let server;
 
     before(() => {
-        server = app.listen(8001); // Starting the app on a different port for testing
+        server = app.listen(8001); // Start the app on a different port for testing
     });
 
     after(() => {
@@ -17,10 +17,10 @@ describe('To-do List App', () => {
         it('should return the todo list', (done) => {
             request(app)
                 .get('/todo')
-                .expect(200) // HTTP status code for success
+                .expect(200) // Expecting HTTP status 200
                 .end((err, res) => {
                     if (err) return done(err);
-                    console.log('GET /todo response:', res.text);
+                    // Check if the page contains a form (this is part of your ejs page)
                     assert(res.text.includes('<form'), 'Expected HTML form in response');
                     done();
                 });
@@ -29,28 +29,29 @@ describe('To-do List App', () => {
 
     describe('GET /todo/delete/:id', () => {
         it('should delete a todo item', (done) => {
-            // First add a test item to the list using a POST request
+            // Add a test item to the list using POST request
             request(app)
                 .post('/todo/add')
-                .send({ newtodo: 'Test Item to Delete' })
+                .send({ newtodo: 'Item to Delete' })
                 .end((err, res) => {
                     if (err) return done(err);
 
-                    // Then delete the item
+                    // Then delete the item by its ID (assuming ID is 0 for the first item)
                     request(app)
-                        .get('/todo/delete/0') // Assuming the ID is 0 for the first item
+                        .get('/todo/delete/0') // delete the first item
                         .expect(302)
-                        .expect('Location', '/todo')
+                        .expect('Location', '/todo') // Expect redirection to /todo
                         .end((err, res) => {
                             if (err) return done(err);
 
-                            setTimeout(() => {  // Ensure the page reloads
+                            setTimeout(() => {  // Wait to ensure the page reloads
+                                // Check that the item is deleted
                                 request(app)
                                     .get('/todo')
                                     .end((err, res) => {
                                         if (err) return done(err);
-                                        console.log('GET /todo after deletion:', res.text);
-                                        assert(!res.text.includes('Test Item to Delete'), 'Item should be deleted');
+                                        // Check that the deleted item does not exist in the response
+                                        assert(!res.text.includes('Item to Delete'), 'Item should be deleted');
                                         done();
                                     });
                             }, 1500);  // Increased delay for page reload
